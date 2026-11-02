@@ -4,10 +4,7 @@
 
   var STORAGE_KEY = "ecovision-theme";
   var root = document.documentElement;
-  var media = window.matchMedia
-    ? window.matchMedia("(prefers-color-scheme: dark)")
-    : null;
-  var current = "light";
+  var current = "dark";
   var ready = false;
 
   function readStored() {
@@ -28,9 +25,7 @@
   }
 
   function preferredTheme() {
-    var stored = readStored();
-    if (stored) return stored;
-    return media && media.matches ? "dark" : "light";
+    return readStored() || "dark";
   }
 
   function syncButtons() {
@@ -49,7 +44,7 @@
 
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-      meta.setAttribute("content", current === "dark" ? "#08120d" : "#faf7ef");
+      meta.setAttribute("content", current === "dark" ? "#08080b" : "#f5f4fa");
     }
 
     syncButtons();
@@ -78,17 +73,6 @@
     document.addEventListener("DOMContentLoaded", start);
   } else {
     start();
-  }
-
-  if (media) {
-    var onSystemChange = function (event) {
-      if (!readStored()) apply(event.matches ? "dark" : "light", false);
-    };
-    if (media.addEventListener) {
-      media.addEventListener("change", onSystemChange);
-    } else if (media.addListener) {
-      media.addListener(onSystemChange);
-    }
   }
 
   window.addEventListener("storage", function (event) {

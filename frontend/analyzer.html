@@ -6,7 +6,7 @@
   <title>Analyzer — EcoVision AI</title>
   <meta name="description" content="Upload a waste photo to get an explainable classification, top-3 alternatives, Grad-CAM heatmap, and recycling guidance.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#faf7ef">
+  <meta name="theme-color" content="#08080b">
   <script src="js/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,273 +17,321 @@
 </head>
 <body data-page="analyzer">
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
 
-  <header class="site-header">
-    <div class="container header-inner">
+  <aside class="app-sidebar">
+    <div class="sidebar-head">
       <a class="brand" href="index.html">
-        <img src="assets/logo.svg" alt="" width="36" height="36">
+        <img src="assets/logo.svg" alt="" width="38" height="38">
         <span>EcoVision <em>AI</em></span>
       </a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
-        <svg aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg>
-      </button>
-      <nav class="site-nav" id="site-nav" data-nav aria-label="Primary">
-        <a href="index.html" data-nav-key="home">Home</a>
-        <a href="analyzer.html" data-nav-key="analyzer">Analyzer</a>
-        <a href="dashboard.html" data-nav-key="dashboard">Dashboard</a>
-        <a href="about.html" data-nav-key="about">Model &amp; data</a>
-      </nav>
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch to dark theme">
-        <svg class="icon-moon" aria-hidden="true"><use href="assets/icons.svg#icon-moon"></use></svg>
-        <svg class="icon-sun" aria-hidden="true"><use href="assets/icons.svg#icon-sun"></use></svg>
-      </button>
-      <a class="btn btn-primary btn-sm header-cta" href="analyzer.html">Analyze waste</a>
     </div>
-  </header>
 
-  <div class="model-banner" data-model-banner hidden>
-    <div class="container">
-      <svg aria-hidden="true"><use href="assets/icons.svg#icon-warning"></use></svg>
-      <span><strong>Model status:</strong> <span data-banner-text></span></span>
-      <a href="about.html" data-banner-link hidden>Details</a>
+    <nav class="site-nav" id="site-nav" data-nav aria-label="Primary">
+      <span class="nav-label">Workspace</span>
+      <a href="index.html" data-nav-key="home">
+        <svg aria-hidden="true"><use href="assets/icons.svg#icon-leaf"></use></svg>
+        <span>Overview</span>
+      </a>
+      <a href="analyzer.html" data-nav-key="analyzer">
+        <svg aria-hidden="true"><use href="assets/icons.svg#icon-camera"></use></svg>
+        <span>Analyzer</span>
+      </a>
+      <a href="dashboard.html" data-nav-key="dashboard">
+        <svg aria-hidden="true"><use href="assets/icons.svg#icon-chart"></use></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="about.html" data-nav-key="about">
+        <svg aria-hidden="true"><use href="assets/icons.svg#icon-brain"></use></svg>
+        <span>Model &amp; data</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <svg aria-hidden="true"><use href="assets/icons.svg#icon-spark"></use></svg>
+      <strong>Scan an item</strong>
+      <p>Upload a photo and inspect the evidence behind the prediction.</p>
+      <a href="analyzer.html">
+        Open analyzer
+        <svg aria-hidden="true"><use href="assets/icons.svg#icon-arrow-right"></use></svg>
+      </a>
     </div>
-  </div>
 
-  <main id="main">
-    <div class="page-head">
+    <div class="sidebar-foot">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>Advisory tool · not a disposal authority</span>
+    </div>
+  </aside>
+
+  <div class="app-body">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+          <svg aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg>
+        </button>
+        <span class="topbar-title">Analyzer</span>
+        <div class="topbar-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" title="Switch to light theme">
+            <svg class="icon-moon" aria-hidden="true"><use href="assets/icons.svg#icon-moon"></use></svg>
+            <svg class="icon-sun" aria-hidden="true"><use href="assets/icons.svg#icon-sun"></use></svg>
+          </button>
+          <a class="btn btn-primary btn-sm header-cta" href="analyzer.html">Analyze waste</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="model-banner" data-model-banner hidden>
       <div class="container">
-        <span class="eyebrow">Analyzer</span>
-        <h1>What did you throw away?</h1>
-        <p>Upload one clear photo of a single waste item. You will get a prediction, the top-3 alternatives, an explanation heatmap, and disposal guidance.</p>
+        <svg aria-hidden="true"><use href="assets/icons.svg#icon-warning"></use></svg>
+        <span><strong>Model status:</strong> <span data-banner-text></span></span>
+        <a href="about.html" data-banner-link hidden>Details</a>
       </div>
     </div>
 
-    <section class="container analyzer-grid" aria-label="Waste image analysis">
-      <div class="card card-pad analyzer-panel">
-        <div class="spread">
-          <div>
-            <h3>1. Choose an image</h3>
-            <p class="small muted">JPEG, PNG, or WebP · up to 8 MB · at least 64×64 px</p>
+    <main id="main">
+      <div class="page-head">
+        <div class="container">
+          <span class="eyebrow">Analyzer</span>
+          <h1>What did you throw away?</h1>
+          <p>Upload one clear photo of a single waste item. You will get a prediction, the top-3 alternatives, an explanation heatmap, and disposal guidance.</p>
+        </div>
+      </div>
+
+      <section class="container analyzer-grid" aria-label="Waste image analysis">
+        <div class="card card-pad analyzer-panel">
+          <div class="spread">
+            <div>
+              <h3>1. Choose an image</h3>
+              <p class="small muted">JPEG, PNG, or WebP · up to 8 MB · at least 64×64 px</p>
+            </div>
+            <span class="badge badge-neutral" data-model-stage>Checking model…</span>
           </div>
-          <span class="badge badge-neutral" data-model-stage>Checking model…</span>
-        </div>
 
-        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a waste image">
-          <span class="dz-icon"><svg aria-hidden="true"><use href="assets/icons.svg#icon-upload"></use></svg></span>
-          <strong>Drop an image here</strong>
-          <span>or click to browse your files</span>
-          <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" aria-label="Choose a waste image">
-        </div>
+          <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a waste image">
+            <span class="dz-icon"><svg aria-hidden="true"><use href="assets/icons.svg#icon-upload"></use></svg></span>
+            <strong>Drop an image here</strong>
+            <span>or click to browse your files</span>
+            <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" aria-label="Choose a waste image">
+          </div>
 
-        <div id="preview-wrap" class="preview" hidden>
-          <img id="preview-img" alt="Selected waste image preview">
-          <div class="preview-actions">
-            <button type="button" class="icon-btn" id="remove-btn" aria-label="Remove selected image">
-              <svg aria-hidden="true"><use href="assets/icons.svg#icon-x"></use></svg>
+          <div id="preview-wrap" class="preview" hidden>
+            <img id="preview-img" alt="Selected waste image preview">
+            <div class="preview-actions">
+              <button type="button" class="icon-btn" id="remove-btn" aria-label="Remove selected image">
+                <svg aria-hidden="true"><use href="assets/icons.svg#icon-x"></use></svg>
+              </button>
+            </div>
+            <div class="preview-meta">
+              <span id="preview-name">image.jpg</span>
+              <span id="preview-size"></span>
+            </div>
+          </div>
+
+          <div id="upload-error" class="alert alert-error" role="alert" hidden></div>
+
+          <div class="analyzer-actions">
+            <button type="button" class="btn btn-primary btn-glass" id="analyze-btn" disabled>
+              <span class="glass-icon" aria-hidden="true">
+                <svg><use href="assets/icons.svg#icon-search"></use></svg>
+              </span>
+              <span id="analyze-label">Analyze waste</span>
             </button>
           </div>
-          <div class="preview-meta">
-            <span id="preview-name">image.jpg</span>
-            <span id="preview-size"></span>
-          </div>
+          <p class="small muted">Images are re-encoded and stored only as derived thumbnails for the history view.</p>
         </div>
 
-        <div id="upload-error" class="alert alert-error" role="alert" hidden></div>
-
-        <div class="analyzer-actions">
-          <button type="button" class="btn btn-primary" id="analyze-btn" disabled>
-            <svg aria-hidden="true"><use href="assets/icons.svg#icon-spark"></use></svg>
-            <span id="analyze-label">Analyze waste</span>
-          </button>
-        </div>
-        <p class="small muted">Images are re-encoded and stored only as derived thumbnails for the history view.</p>
-      </div>
-
-      <div class="card card-pad result-card" aria-live="polite">
-        <div id="result-empty" class="empty-state">
-          <img src="assets/analyzer-empty.webp" alt="" width="520" height="360">
-          <strong>Your result will appear here</strong>
-          <span class="small">Choose a photo of a single item — a bottle, carton, can, jar, or food scrap.</span>
-        </div>
-
-        <div id="result-loading" class="loading-card" hidden>
-          <div class="skeleton skeleton-line" style="width: 38%"></div>
-          <div class="skeleton skeleton-block"></div>
-          <div class="skeleton skeleton-line" style="width: 82%"></div>
-          <div class="skeleton skeleton-line" style="width: 64%"></div>
-          <p class="small muted">Running the model and computing the Grad-CAM explanation…</p>
-        </div>
-
-        <div id="result-error" class="alert alert-error" role="alert" hidden>
-          <svg aria-hidden="true"><use href="assets/icons.svg#icon-alert"></use></svg>
-          <span id="result-error-text"></span>
-        </div>
-
-        <div id="result-content" hidden>
-          <div class="result-top">
-            <div class="ring" aria-hidden="true">
-              <svg viewBox="0 0 132 132">
-                <circle class="ring-track" cx="66" cy="66" r="54"></circle>
-                <circle class="ring-fill" id="ring-fill" cx="66" cy="66" r="54"></circle>
-              </svg>
-              <div class="ring-value">
-                <strong id="ring-value">0%</strong>
-                <span>confidence</span>
-              </div>
+        <div class="card card-pad result-card" aria-live="polite">
+          <div id="result-empty" class="empty-state">
+            <img src="assets/analyzer-empty.webp" alt="" width="520" height="360">
+            <div class="empty-glyph" aria-hidden="true">
+              <svg><use href="assets/icons.svg#icon-image"></use></svg>
             </div>
-            <div class="result-class">
-              <span class="badge" id="result-stage">—</span>
-              <h2 id="result-class">—</h2>
-              <p id="result-meta">—</p>
+            <strong>Your result will appear here</strong>
+            <span class="small">Choose a photo of a single item — a bottle, carton, can, jar, or food scrap.</span>
+          </div>
+
+          <div id="result-loading" class="loading-card" hidden>
+            <div class="orb-stage">
+              <canvas class="thinking-orb" data-thinking-orb data-orb-size="96" role="img" aria-label="Analyzing image"></canvas>
+            </div>
+            <div class="loading-copy">
+              <strong>Analyzing your image…</strong>
+              <p class="small muted">Running the classifier. The Grad-CAM heatmap is generated on demand when you open it.</p>
             </div>
           </div>
 
-          <div id="low-confidence" class="alert alert-warn" hidden style="margin-top: 18px">
-            <svg aria-hidden="true"><use href="assets/icons.svg#icon-warning"></use></svg>
-            <span>Confidence is low. Treat this as a hint, not a decision — check the item yourself and the top-3 alternatives below.</span>
+          <div id="result-error" class="alert alert-error" role="alert" hidden>
+            <svg aria-hidden="true"><use href="assets/icons.svg#icon-alert"></use></svg>
+            <span id="result-error-text"></span>
           </div>
 
-          <section class="result-section" aria-labelledby="top3-heading">
-            <h3 id="top3-heading">Top 3 predictions</h3>
-            <div class="bars" id="top3-bars"></div>
-          </section>
+          <div id="result-content" hidden>
+            <div class="result-top">
+              <div class="ring" aria-hidden="true">
+                <svg viewBox="0 0 132 132">
+                  <circle class="ring-track" cx="66" cy="66" r="54"></circle>
+                  <circle class="ring-fill" id="ring-fill" cx="66" cy="66" r="54"></circle>
+                </svg>
+                <div class="ring-value">
+                  <strong id="ring-value">0%</strong>
+                  <span>confidence</span>
+                </div>
+              </div>
+              <div class="result-class">
+                <span class="badge" id="result-stage">—</span>
+                <h2 id="result-class">—</h2>
+                <p id="result-meta">—</p>
+              </div>
+            </div>
 
-          <section class="result-section" aria-labelledby="advice-heading">
-            <div class="spread">
-              <h3 id="advice-heading">Recycling guidance</h3>
-              <span class="badge badge-neutral">General guidance</span>
-            </div>
-            <div class="advice-grid">
-              <div class="advice-tile">
-                <div class="label">Typical bin</div>
-                <div class="value" id="advice-bin">—</div>
-                <div class="sub" id="advice-color">—</div>
-              </div>
-              <div class="advice-tile">
-                <div class="label">Disposal method</div>
-                <div class="value" id="advice-method">—</div>
-              </div>
-            </div>
-            <h3>Before you bin it</h3>
-            <ul class="check-list" id="advice-steps"></ul>
-            <p class="small muted" id="advice-examples" style="margin-top: 12px"></p>
-            <p class="small" id="advice-impact" style="margin-top: 14px"></p>
-            <div class="alert alert-warn" id="advice-cautions" style="margin-top: 14px" hidden>
+            <div id="low-confidence" class="alert alert-warn" hidden style="margin-top: 18px">
               <svg aria-hidden="true"><use href="assets/icons.svg#icon-warning"></use></svg>
-              <span id="advice-cautions-text"></span>
+              <span>Confidence is low. Treat this as a hint, not a decision — check the item yourself and the top-3 alternatives below.</span>
             </div>
-            <p class="small muted" id="advice-disclaimer" style="margin-top: 14px"></p>
-          </section>
 
-          <section class="result-section" aria-labelledby="gradcam-heading">
-            <div class="spread">
-              <h3 id="gradcam-heading">Why this prediction?</h3>
-              <div class="tabs" role="tablist" aria-label="Grad-CAM views">
-                <button class="tab" type="button" role="tab" id="tab-original" aria-selected="true" aria-controls="gradcam-panel" data-view="original">Original</button>
-                <button class="tab" type="button" role="tab" id="tab-heatmap" aria-selected="false" aria-controls="gradcam-panel" data-view="heatmap">Heatmap</button>
-                <button class="tab" type="button" role="tab" id="tab-overlay" aria-selected="false" aria-controls="gradcam-panel" data-view="overlay">Overlay</button>
-              </div>
-            </div>
-            <figure class="gradcam-figure" id="gradcam-panel" role="tabpanel" aria-labelledby="tab-original">
-              <img id="gradcam-img" alt="Grad-CAM explanation for the prediction">
-              <figcaption id="gradcam-caption">Grad-CAM highlights the regions that contributed most to the predicted class.</figcaption>
-            </figure>
-          </section>
+            <section class="result-section" aria-labelledby="top3-heading">
+              <h3 id="top3-heading">Top 3 predictions</h3>
+              <div class="bars" id="top3-bars"></div>
+            </section>
 
-          <section class="feedback-card" id="feedback-card" hidden>
-            <h3>Was this prediction useful?</h3>
-            <p>Feedback is stored as unverified and does not retrain the model automatically.</p>
-            <div class="feedback-actions" id="feedback-actions">
-              <button class="btn btn-secondary btn-sm" type="button" id="feedback-correct">
-                <svg aria-hidden="true"><use href="assets/icons.svg#icon-check"></use></svg>
-                Yes, correct
-              </button>
-              <button class="btn btn-ghost btn-sm" type="button" id="feedback-incorrect">
-                <svg aria-hidden="true"><use href="assets/icons.svg#icon-x"></use></svg>
-                No, it is wrong
-              </button>
-            </div>
-            <div class="feedback-details" id="feedback-details" hidden>
-              <div class="field">
-                <label for="feedback-class">Correct category</label>
-                <select id="feedback-class">
-                  <option value="Plastic">Plastic</option>
-                  <option value="Paper">Paper</option>
-                  <option value="Cardboard">Cardboard</option>
-                  <option value="Glass">Glass</option>
-                  <option value="Metal">Metal</option>
-                  <option value="Organic">Organic</option>
-                  <option value="General">General</option>
-                </select>
+            <section class="result-section" aria-labelledby="advice-heading">
+              <div class="spread">
+                <h3 id="advice-heading">Recycling guidance</h3>
+                <span class="badge badge-neutral">General guidance</span>
               </div>
-              <div class="field">
-                <label for="feedback-comment">Comment (optional)</label>
-                <textarea id="feedback-comment" maxlength="1000" placeholder="Anything that would help a human reviewer?"></textarea>
+              <div class="advice-grid">
+                <div class="advice-tile">
+                  <div class="label">Typical bin</div>
+                  <div class="value" id="advice-bin">—</div>
+                  <div class="sub" id="advice-color">—</div>
+                </div>
+                <div class="advice-tile">
+                  <div class="label">Disposal method</div>
+                  <div class="value" id="advice-method">—</div>
+                </div>
               </div>
-              <div class="row">
-                <button class="btn btn-primary btn-sm" type="button" id="feedback-submit">Send feedback</button>
-                <span class="small muted" id="feedback-error" role="alert"></span>
+              <h3>Before you bin it</h3>
+              <ul class="check-list" id="advice-steps"></ul>
+              <p class="small muted" id="advice-examples" style="margin-top: 12px"></p>
+              <p class="small" id="advice-impact" style="margin-top: 14px"></p>
+              <div class="alert alert-warn" id="advice-cautions" style="margin-top: 14px" hidden>
+                <svg aria-hidden="true"><use href="assets/icons.svg#icon-warning"></use></svg>
+                <span id="advice-cautions-text"></span>
               </div>
-            </div>
-            <div class="feedback-thanks" id="feedback-thanks" hidden>
-              <svg width="20" height="20" aria-hidden="true"><use href="assets/icons.svg#icon-check"></use></svg>
-              <span>Thanks — your feedback was recorded as unverified.</span>
-            </div>
-          </section>
+              <p class="small muted" id="advice-disclaimer" style="margin-top: 14px"></p>
+            </section>
+
+            <section class="result-section" aria-labelledby="gradcam-heading">
+              <div class="spread">
+                <h3 id="gradcam-heading">Why this prediction?</h3>
+                <div class="tabs" role="tablist" aria-label="Grad-CAM views">
+                  <button class="tab" type="button" role="tab" id="tab-original" aria-selected="true" aria-controls="gradcam-panel" data-view="original">Original</button>
+                  <button class="tab" type="button" role="tab" id="tab-heatmap" aria-selected="false" aria-controls="gradcam-panel" data-view="heatmap">Heatmap</button>
+                  <button class="tab" type="button" role="tab" id="tab-overlay" aria-selected="false" aria-controls="gradcam-panel" data-view="overlay">Overlay</button>
+                </div>
+              </div>
+              <figure class="gradcam-figure" id="gradcam-panel" role="tabpanel" aria-labelledby="tab-original">
+                <img id="gradcam-img" alt="Grad-CAM explanation for the prediction">
+                <figcaption id="gradcam-caption">Grad-CAM highlights the regions that contributed most to the predicted class.</figcaption>
+              </figure>
+            </section>
+
+            <section class="feedback-card" id="feedback-card" hidden>
+              <h3>Was this prediction useful?</h3>
+              <p>Feedback is stored as unverified and does not retrain the model automatically.</p>
+              <div class="feedback-actions" id="feedback-actions">
+                <button class="btn btn-secondary btn-sm" type="button" id="feedback-correct">
+                  <svg aria-hidden="true"><use href="assets/icons.svg#icon-check"></use></svg>
+                  Yes, correct
+                </button>
+                <button class="btn btn-ghost btn-sm" type="button" id="feedback-incorrect">
+                  <svg aria-hidden="true"><use href="assets/icons.svg#icon-x"></use></svg>
+                  No, it is wrong
+                </button>
+              </div>
+              <div class="feedback-details" id="feedback-details" hidden>
+                <div class="field">
+                  <label for="feedback-class">Correct category</label>
+                  <select id="feedback-class">
+                    <option value="Plastic">Plastic</option>
+                    <option value="Paper">Paper</option>
+                    <option value="Cardboard">Cardboard</option>
+                    <option value="Glass">Glass</option>
+                    <option value="Metal">Metal</option>
+                    <option value="Organic">Organic</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="feedback-comment">Comment (optional)</label>
+                  <textarea id="feedback-comment" maxlength="1000" placeholder="Anything that would help a human reviewer?"></textarea>
+                </div>
+                <div class="row">
+                  <button class="btn btn-primary btn-sm" type="button" id="feedback-submit">Send feedback</button>
+                  <span class="small muted" id="feedback-error" role="alert"></span>
+                </div>
+              </div>
+              <div class="feedback-thanks" id="feedback-thanks" hidden>
+                <svg width="20" height="20" aria-hidden="true"><use href="assets/icons.svg#icon-check"></use></svg>
+                <span>Thanks — your feedback was recorded as unverified.</span>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="container section-sm">
+        <div class="alert alert-info">
+          <svg aria-hidden="true"><use href="assets/icons.svg#icon-alert"></use></svg>
+          <span>EcoVision is an advisory tool. Local recycling rules and bin colors vary — check your municipality before disposing of anything hazardous or uncertain.</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a class="brand" href="index.html">
+              <img src="assets/logo.svg" alt="" width="38" height="38">
+              <span>EcoVision <em>AI</em></span>
+            </a>
+            <p>An explainable waste classifier built with PyTorch, FastAPI, and vanilla JavaScript.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="analyzer.html">Analyzer</a></li>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="about.html">Model &amp; data</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="/docs">API reference</a></li>
+              <li><a href="about.html#limitations">Limitations</a></li>
+              <li><a href="about.html#dataset">Dataset attribution</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Data</h4>
+            <ul>
+              <li><a href="https://archive.ics.uci.edu/dataset/908/realwaste" rel="noopener noreferrer">RealWaste (UCI)</a></li>
+              <li><a href="https://doi.org/10.24432/C5SS4G" rel="noopener noreferrer">DOI 10.24432/C5SS4G</a></li>
+              <li><a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; <span data-year>2026</span> EcoVision AI</span>
+          <span>Recycling guidance is general information, not a substitute for local rules.</span>
         </div>
       </div>
-    </section>
+    </footer>
+  </div>
 
-    <section class="container section-sm">
-      <div class="alert alert-info">
-        <svg aria-hidden="true"><use href="assets/icons.svg#icon-alert"></use></svg>
-        <span>EcoVision is an advisory tool. Local recycling rules and bin colors vary — check your municipality before disposing of anything hazardous or uncertain.</span>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <a class="brand" href="index.html">
-            <img src="assets/logo.svg" alt="" width="36" height="36">
-            <span>EcoVision <em>AI</em></span>
-          </a>
-          <p>An explainable waste classifier built with PyTorch, FastAPI, and vanilla JavaScript.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="analyzer.html">Analyzer</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="about.html">Model &amp; data</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Resources</h4>
-          <ul>
-            <li><a href="/docs">API reference</a></li>
-            <li><a href="about.html#limitations">Limitations</a></li>
-            <li><a href="about.html#dataset">Dataset attribution</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Data</h4>
-          <ul>
-            <li><a href="https://archive.ics.uci.edu/dataset/908/realwaste" rel="noopener noreferrer">RealWaste (UCI)</a></li>
-            <li><a href="https://doi.org/10.24432/C5SS4G" rel="noopener noreferrer">DOI 10.24432/C5SS4G</a></li>
-            <li><a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>&copy; <span data-year>2026</span> EcoVision AI</span>
-        <span>Recycling guidance is general information, not a substitute for local rules.</span>
-      </div>
-    </div>
-  </footer>
-
+  <script type="module" src="js/vendor/thinking-orb.js"></script>
   <script type="module" src="js/analyzer.js"></script>
   <script type="module" src="js/nav.js"></script>
 </body>
