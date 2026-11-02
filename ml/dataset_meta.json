@@ -1,0 +1,44 @@
+{
+  "dataset": "RealWaste",
+  "version": "1.0",
+  "description": "Real-world landfill waste images collected at the Whyte's Gully landfill, Wollongong, Australia.",
+  "source_url": "https://archive.ics.uci.edu/dataset/908/realwaste",
+  "download_url": "https://archive.ics.uci.edu/static/public/908/realwaste.zip",
+  "doi": "10.24432/C5SS4G",
+  "license": "CC BY 4.0",
+  "citation": "Single, S., Iranmanesh, S., & Raad, R. (2023). RealWaste: A Novel Real-Life Data Set for Landfill Waste Classification Using Deep Learning. Information, 14(12), 633.",
+  "paper_url": "https://www.mdpi.com/2078-2489/14/12/633",
+  "total_images": 4752,
+  "image_size": [524, 524],
+  "target_classes": ["Plastic", "Paper", "Cardboard", "Glass", "Metal", "Organic", "General"],
+  "source_classes": {
+    "Cardboard": 461,
+    "Food Organics": 411,
+    "Glass": 420,
+    "Metal": 790,
+    "Miscellaneous Trash": 495,
+    "Paper": 500,
+    "Plastic": 921,
+    "Textile Trash": 318,
+    "Vegetation": 436
+  },
+  "class_mapping": {
+    "Plastic": ["Plastic"],
+    "Paper": ["Paper"],
+    "Cardboard": ["Cardboard"],
+    "Glass": ["Glass"],
+    "Metal": ["Metal"],
+    "Organic": ["Food Organics", "Vegetation"],
+    "General": ["Miscellaneous Trash", "Textile Trash"]
+  },
+  "mapping_notes": {
+    "Organic": "Food organics and vegetation are combined into a single compostable/organic category.",
+    "General": "Miscellaneous trash and textile trash are combined into a general-waste category. Textiles are excluded because they are rarely accepted in curbside recycling."
+  },
+  "split": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15,
+    "seed": 42
+  }
+}

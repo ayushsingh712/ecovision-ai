@@ -1,0 +1,18 @@
+{
+  "active": "mobilenet_v2_best.pt",
+  "stage": "final",
+  "arch": "mobilenet_v2",
+  "model_version": "realwaste-7class-v1",
+  "class_names": [
+    "Plastic",
+    "Paper",
+    "Cardboard",
+    "Glass",
+    "Metal",
+    "Organic",
+    "General"
+  ],
+  "metrics_path": null,
+  "validation_macro_f1": 0.8865399569358706,
+  "created_at": "2026-11-02T10:29:33+00:00"
+}

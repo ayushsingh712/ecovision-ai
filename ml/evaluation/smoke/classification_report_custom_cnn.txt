@@ -1,0 +1,18 @@
+Custom CNN — smoke test split
+Images: 420
+Split hash: 3ed206b0169d788d...
+Evaluated: 2026-11-01T16:45:53+00:00
+
+              precision    recall  f1-score   support
+
+     Plastic     0.3913    0.4500    0.4186        60
+       Paper     0.3421    0.2167    0.2653        60
+   Cardboard     0.6111    0.3667    0.4583        60
+       Glass     0.5500    0.7333    0.6286        60
+       Metal     0.5246    0.5333    0.5289        60
+     Organic     0.5000    0.9500    0.6552        60
+     General     0.4545    0.1667    0.2439        60
+
+    accuracy                         0.4881       420
+   macro avg     0.4820    0.4881    0.4570       420
+weighted avg     0.4820    0.4881    0.4570       420

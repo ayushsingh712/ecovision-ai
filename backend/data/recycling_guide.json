@@ -1,0 +1,191 @@
+{
+  "version": "1.0.0",
+  "last_reviewed": "2026-11-01",
+  "disclaimer": "This guide is general education, not a legal or municipal ruling. Accepted materials, bin colors, and collection rules vary by location. Always check your local waste authority before discarding an item.",
+  "region_note": "Bin colors and accepted items vary widely by municipality and country; verify locally.",
+  "sources": [
+    {
+      "title": "U.S. EPA — Recycling Basics and Resources",
+      "url": "https://www.epa.gov/recycle"
+    },
+    {
+      "title": "U.S. EPA — Frequent Questions on Recycling",
+      "url": "https://www.epa.gov/recycle/frequent-questions-recycling"
+    },
+    {
+      "title": "U.S. EPA — Composting at Home",
+      "url": "https://www.epa.gov/recycle/composting-home"
+    }
+  ],
+  "categories": {
+    "Plastic": {
+      "bin_type": "Mixed recycling (rigid plastics), where accepted",
+      "bin_color": "Often blue, but varies by municipality",
+      "disposal_method": "Empty, rinse, and dry rigid plastic containers, then place accepted items in the recycling stream. Soft films and bags usually need a separate store drop-off.",
+      "instructions": [
+        "Empty and rinse food or drink residue.",
+        "Check the resin code and your local accepted-plastics list.",
+        "Keep caps on bottles unless your local program says otherwise.",
+        "Do not put plastic bags, wrap, or black plastic in curbside recycling unless explicitly accepted.",
+        "Take plastic film to a retail or municipal collection point if available."
+      ],
+      "environmental_impact": "Recycling plastic displaces some virgin fossil-based resin and keeps material out of landfill, but recycling rates remain limited and quality can degrade each cycle. Reducing single-use plastic and reusing containers has a larger effect than recycling alone.",
+      "examples": [
+        "Beverage bottles",
+        "Food tubs",
+        "Detergent bottles",
+        "Rigid packaging"
+      ],
+      "cautions": [
+        "Compostable or biodegradable plastics are usually not accepted in recycling.",
+        "Black plastic is often missed by sorting equipment.",
+        "Plastic film can jam recycling machinery."
+      ]
+    },
+    "Paper": {
+      "bin_type": "Mixed paper recycling",
+      "bin_color": "Often blue, but varies by municipality",
+      "disposal_method": "Keep paper clean and dry, then place it in mixed-paper recycling. Compost uncoated, food-soiled paper only where organics collection accepts it.",
+      "instructions": [
+        "Remove plastic wrap, rubber bands, and non-paper attachments.",
+        "Keep paper dry and free of food residue.",
+        "Flatten or bundle loose sheets so they do not blow away.",
+        "Do not recycle greasy pizza boxes or heavily soiled paper.",
+        "Shredded paper may need a paper bag or local drop-off, depending on the program."
+      ],
+      "environmental_impact": "Recycling paper reduces demand for virgin wood pulp and keeps fiber in use, while clean, dry collection preserves its value. Fibers shorten with each recycling cycle, so source reduction still matters.",
+      "examples": [
+        "Office paper",
+        "Newspapers",
+        "Magazines",
+        "Clean envelopes",
+        "Paper bags"
+      ],
+      "cautions": [
+        "Food-soiled paper can contaminate a recycling batch.",
+        "Wax-coated or glossy laminated paper may not be recyclable.",
+        "Do not include tissues or paper towels in mixed recycling."
+      ]
+    },
+    "Cardboard": {
+      "bin_type": "Cardboard and mixed paper recycling",
+      "bin_color": "Often blue, but varies by municipality",
+      "disposal_method": "Flatten clean, dry cardboard and place it in cardboard recycling. Remove packing material and tape where practical.",
+      "instructions": [
+        "Empty and flatten boxes to save space.",
+        "Remove polystyrene, plastic bags, and excessive tape.",
+        "Keep cardboard dry; wet or greasy cardboard is often rejected.",
+        "Do not recycle waxed produce boxes or heavily soiled takeaway boxes.",
+        "Cut large boxes down to the size your local program accepts."
+      ],
+      "environmental_impact": "Recycling corrugated cardboard keeps strong paper fiber in circulation and reduces demand for new pulp. Reuse of boxes is even better because it avoids the collection and reprocessing steps.",
+      "examples": [
+        "Shipping boxes",
+        "Cereal boxes",
+        "Shoe boxes",
+        "Clean takeaway packaging"
+      ],
+      "cautions": [
+        "Grease- or food-soiled cardboard belongs in organics or general waste, depending on local rules.",
+        "Wax-coated boxes are usually not recyclable.",
+        "Packing peanuts and bubble wrap are not cardboard recycling."
+      ]
+    },
+    "Glass": {
+      "bin_type": "Glass bottle and jar recycling",
+      "bin_color": "Often green or clear, but varies by municipality",
+      "disposal_method": "Rinse glass bottles and jars and place them in glass recycling. Wrap broken glass securely and put it in general waste if your program does not accept broken glass.",
+      "instructions": [
+        "Empty and rinse containers.",
+        "Remove metal lids and recycle them with metals if accepted.",
+        "Do not mix in drinking glasses, mirrors, ceramics, or heat-resistant glass.",
+        "Check whether your program sorts glass by color.",
+        "Never place loose broken glass in a recycling or organics bin."
+      ],
+      "environmental_impact": "Glass can be recycled repeatedly without loss of quality. Recycling reduces demand for raw materials such as sand and soda ash, while the weight of glass makes transport a significant part of its footprint.",
+      "examples": [
+        "Glass bottles",
+        "Glass jars",
+        "Food and beverage containers"
+      ],
+      "cautions": [
+        "Pyrex, mirrors, window glass, and ceramics have different melting points and contaminate glass recycling.",
+        "Broken glass is a safety hazard for collection workers.",
+        "Glass should not go in organics bins."
+      ]
+    },
+    "Metal": {
+      "bin_type": "Metal and mixed recycling",
+      "bin_color": "Often blue, but varies by municipality",
+      "disposal_method": "Empty and rinse metal cans and containers, then place accepted items in recycling. Keep sharp edges contained and check local rules for aerosols.",
+      "instructions": [
+        "Empty and rinse food or drink cans.",
+        "Leave labels on unless your local program says otherwise.",
+        "Recycle aluminum and steel cans together where mixed recycling is accepted.",
+        "Only include aerosols and gas cylinders if they are empty and locally accepted.",
+        "Take batteries, electronics, and pressurized containers to dedicated drop-off points."
+      ],
+      "environmental_impact": "Metals are highly recyclable and can be recycled repeatedly. Producing recycled aluminum requires substantially less energy than producing primary aluminum from ore, and keeping metals out of landfill conserves material value.",
+      "examples": [
+        "Aluminum beverage cans",
+        "Steel food cans",
+        "Clean foil trays",
+        "Metal lids"
+      ],
+      "cautions": [
+        "Batteries and e-waste can cause fires and must not go in recycling or general bins.",
+        "Pressurized containers can be dangerous if compacted.",
+        "Sharps and razor blades should be wrapped and handled through a safe disposal route."
+      ]
+    },
+    "Organic": {
+      "bin_type": "Organics or food-scrap collection; home compost where appropriate",
+      "bin_color": "Often green, but varies by municipality",
+      "disposal_method": "Separate food scraps and plant material into organics collection or home compost. Keep plastic bags and packaging out of organics.",
+      "instructions": [
+        "Remove packaging, stickers, rubber bands, and produce ties.",
+        "Use only compostable liners explicitly accepted by your program.",
+        "Keep meat, dairy, and cooked food out of home compost unless your system can handle them.",
+        "Balance wet food scraps with dry leaves or browns in a home compost pile.",
+        "Do not put compostable plastics in organics unless your facility certifies them."
+      ],
+      "environmental_impact": "Composting returns nutrients to soil and improves water retention. Keeping food scraps out of landfill also avoids methane produced when organic material decomposes without oxygen.",
+      "examples": [
+        "Fruit and vegetable scraps",
+        "Coffee grounds",
+        "Garden trimmings",
+        "Leaves",
+        "Clean paper food packaging where local organics programs accept it"
+      ],
+      "cautions": [
+        "Plastic bags, stickers, and twist ties contaminate compost.",
+        "Oils, meat, and dairy may attract pests in home compost.",
+        "Persistent pesticides and diseased plants need local guidance."
+      ]
+    },
+    "General": {
+      "bin_type": "General waste / landfill",
+      "bin_color": "Often grey or black, but varies by municipality",
+      "disposal_method": "Place only non-recyclable, non-hazardous items in general waste. Route batteries, electronics, chemicals, and sharps to dedicated collection points.",
+      "instructions": [
+        "Confirm that the item is not recyclable or compostable locally.",
+        "Bag sharp or messy items safely so collection workers are protected.",
+        "Keep batteries, e-waste, chemicals, paint, and medical sharps out of the general bin.",
+        "Look for repair, reuse, donation, or take-back options before discarding.",
+        "Reduce single-use items where a durable alternative exists."
+      ],
+      "environmental_impact": "Landfill disposal is the last resort because it buries material value and can generate long-term emissions. Source reduction, reuse, and correct separation keep recyclable and hazardous items out of landfill.",
+      "examples": [
+        "Soiled or mixed-material packaging",
+        "Used tissues",
+        "Broken ceramics",
+        "Non-recyclable composite items"
+      ],
+      "cautions": [
+        "Batteries and electronics can cause landfill and collection-truck fires.",
+        "Hazardous chemicals and medical waste require special handling.",
+        "Textiles are often better donated or taken to textile collection than landfilled."
+      ]
+    }
+  }
+}

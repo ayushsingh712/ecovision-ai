@@ -1,0 +1,35 @@
+[
+  {
+    "phase": "scratch",
+    "epoch": 1,
+    "train_loss": 1.857426270984468,
+    "train_accuracy": 0.2857142857142857,
+    "train_macro_f1": 0.2560254121756841,
+    "val_loss": 2.068244701340085,
+    "val_accuracy": 0.21428571428571427,
+    "val_macro_f1": 0.1469311577175945,
+    "learning_rate": 0.001
+  },
+  {
+    "phase": "scratch",
+    "epoch": 2,
+    "train_loss": 1.7299228804452078,
+    "train_accuracy": 0.32142857142857145,
+    "train_macro_f1": 0.3111907103854495,
+    "val_loss": 2.0138869524002074,
+    "val_accuracy": 0.30714285714285716,
+    "val_macro_f1": 0.27055167712184963,
+    "learning_rate": 0.00075
+  },
+  {
+    "phase": "scratch",
+    "epoch": 3,
+    "train_loss": 1.5634313958031791,
+    "train_accuracy": 0.4523809523809524,
+    "train_macro_f1": 0.44293847005216574,
+    "val_loss": 1.63124049164,
+    "val_accuracy": 0.4714285714285714,
+    "val_macro_f1": 0.44439548601171225,
+    "learning_rate": 0.0002500000000000001
+  }
+]

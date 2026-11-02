@@ -1,0 +1,18 @@
+MobileNetV2 — final test split
+Images: 713
+Split hash: 3ed206b0169d788d...
+Evaluated: 2026-11-02T13:01:19+00:00
+
+              precision    recall  f1-score   support
+
+     Plastic     0.8750    0.8116    0.8421       138
+       Paper     0.9355    0.7733    0.8467        75
+   Cardboard     0.7500    0.9565    0.8408        69
+       Glass     0.8551    0.9365    0.8939        63
+       Metal     0.8462    0.9244    0.8835       119
+     Organic     0.9756    0.9449    0.9600       127
+     General     0.9204    0.8525    0.8851       122
+
+    accuracy                         0.8822       713
+   macro avg     0.8797    0.8857    0.8789       713
+weighted avg     0.8884    0.8822    0.8823       713

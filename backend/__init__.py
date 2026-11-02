@@ -1,0 +1,1 @@
+"""EcoVision AI FastAPI backend."""

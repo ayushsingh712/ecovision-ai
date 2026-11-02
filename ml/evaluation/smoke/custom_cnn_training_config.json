@@ -1,0 +1,64 @@
+{
+  "arch": "custom_cnn",
+  "stage": "smoke",
+  "epochs": 3,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "dropout": 0.4,
+  "optimizer": "AdamW",
+  "scheduler": "CosineAnnealingLR",
+  "label_smoothing": 0.1,
+  "class_weights": {
+    "Plastic": 1.0,
+    "Paper": 1.0,
+    "Cardboard": 1.0,
+    "Glass": 1.0,
+    "Metal": 1.0,
+    "Organic": 1.0,
+    "General": 1.0
+  },
+  "seed": 42,
+  "device": "cpu",
+  "parameters": 1175015,
+  "dataset": "RealWaste",
+  "torch_version": "2.15.0",
+  "samples": {
+    "train": {
+      "total": 420,
+      "per_class": {
+        "Plastic": 60,
+        "Paper": 60,
+        "Cardboard": 60,
+        "Glass": 60,
+        "Metal": 60,
+        "Organic": 60,
+        "General": 60
+      }
+    },
+    "val": {
+      "total": 420,
+      "per_class": {
+        "Plastic": 60,
+        "Paper": 60,
+        "Cardboard": 60,
+        "Glass": 60,
+        "Metal": 60,
+        "Organic": 60,
+        "General": 60
+      }
+    },
+    "test": {
+      "total": 420,
+      "per_class": {
+        "Plastic": 60,
+        "Paper": 60,
+        "Cardboard": 60,
+        "Glass": 60,
+        "Metal": 60,
+        "Organic": 60,
+        "General": 60
+      }
+    }
+  }
+}

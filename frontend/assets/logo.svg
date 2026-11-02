@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="EcoVision AI logo">
+  <defs>
+    <linearGradient id="leafGrad" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3f9e63"/>
+      <stop offset="1" stop-color="#124a35"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="14" fill="url(#leafGrad)"/>
+  <path d="M35.5 11.5c-11 .6-18.6 4.4-20.6 12.4-1.1 4.5.5 8.6 3.4 11.1 4.4-8.7 10.4-12.8 17.2-15.6-5.2 3.7-10.8 8.4-14.1 16.7 6.4 2.2 13.4-.8 15.4-7.6 1.4-4.7.9-10.7-1.3-17Z" fill="#faf7ef"/>
+  <circle cx="14.5" cy="34.5" r="2.2" fill="#faf7ef" opacity=".9"/>
+</svg>

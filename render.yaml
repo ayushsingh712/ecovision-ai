@@ -1,0 +1,32 @@
+# Render Blueprint — free-tier Docker web service.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Model weights are not committed. Set ECOVISION_HF_REPO (and optionally
+# ECOVISION_HF_TOKEN) in the Render dashboard or the Blueprint prompt. With no
+# repository configured the service starts in degraded mode and reports
+# 503 MODEL_UNAVAILABLE instead of fabricating predictions.
+services:
+  - type: web
+    name: ecovision-ai
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: ECOVISION_APP_ENV
+        value: production
+      - key: ECOVISION_DEVICE
+        value: cpu
+      - key: ECOVISION_LOG_LEVEL
+        value: INFO
+      - key: ECOVISION_FETCH_MODEL
+        value: "true"
+      - key: ECOVISION_HF_FILENAME
+        value: mobilenet_v2_best.pt
+      # sync: false leaves the value out of git and prompts in the dashboard.
+      - key: ECOVISION_HF_REPO
+        sync: false
+      - key: ECOVISION_HF_TOKEN
+        sync: false

@@ -1,0 +1,47 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Environment / local state
+.env
+.env.*
+!.env.example
+.setup.log
+.download.log
+
+# Dataset (large, downloaded locally)
+ml/datasets/*
+!ml/datasets/README.md
+
+# Model weights (downloaded / trained)
+ml/models/**/*.pt
+ml/models/**/*.pth
+ml/models/**/*.onnx
+ml/models/*.pt
+ml/models/*.pth
+ml/models/*.onnx
+ml/models/smoke/
+
+# Runtime data
+data/*
+!data/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Node (not used by this project, but harmless if tooling is added)
+node_modules/
+
+# Model checkpoints and archives
+*.pt
+*.pth
+*.onnx
+*.zip

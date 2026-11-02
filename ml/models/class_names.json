@@ -1,0 +1,12 @@
+{
+  "class_names": [
+    "Plastic",
+    "Paper",
+    "Cardboard",
+    "Glass",
+    "Metal",
+    "Organic",
+    "General"
+  ],
+  "num_classes": 7
+}

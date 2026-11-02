@@ -1,0 +1,18 @@
+Custom CNN — final test split
+Images: 713
+Split hash: 3ed206b0169d788d...
+Evaluated: 2026-11-02T13:00:34+00:00
+
+              precision    recall  f1-score   support
+
+     Plastic     0.5192    0.5870    0.5510       138
+       Paper     0.5238    0.4400    0.4783        75
+   Cardboard     0.6944    0.7246    0.7092        69
+       Glass     0.7121    0.7460    0.7287        63
+       Metal     0.5411    0.6639    0.5962       119
+     Organic     0.7365    0.8583    0.7927       127
+     General     0.5161    0.2623    0.3478       122
+
+    accuracy                         0.6045       713
+   macro avg     0.6062    0.6117    0.6006       713
+weighted avg     0.5955    0.6045    0.5902       713

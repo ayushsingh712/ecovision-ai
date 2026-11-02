@@ -1,0 +1,34 @@
+.git/
+.gitignore
+.github/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Large local-only artifacts
+ml/datasets/
+ml/models/**/*.pt
+ml/models/**/*.pth
+ml/models/**/*.onnx
+ml/models/*.pt
+ml/models/*.pth
+ml/models/smoke/
+data/
+docs/screenshots/
+
+# Local config and scratch files
+.env
+.env.*
+!.env.example
+*.log
+
+# Tests are run outside the image
+tests/
+
+.DS_Store
+.idea/
+.vscode/
+node_modules/

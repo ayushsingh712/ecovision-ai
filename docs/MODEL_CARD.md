@@ -1,0 +1,124 @@
+# Model Card — EcoVision AI Waste Classifier
+
+## Model details
+
+| Field | Value |
+|---|---|
+| Task | Single-label image classification of one waste item into 7 classes |
+| Classes | Plastic, Paper, Cardboard, Glass, Metal, Organic, General |
+| Architectures | Custom CNN (from scratch) and MobileNetV2 (ImageNet transfer learning) |
+| Input | RGB image, 224 × 224 after evaluation preprocessing |
+| Output | Softmax over 7 classes; top-3 labels and confidences |
+| Framework | PyTorch 2.15, torchvision 0.29, Python 3.12 |
+| Parameters | 1,175,015 (Custom CNN); 2,232,839 (MobileNetV2) |
+| Checkpoint size | 4.5 MB (Custom CNN); 8.7 MB (MobileNetV2) |
+| Active model | Resolved from `ml/models/model_manifest.json`; MobileNetV2 is preferred |
+| Explanation | Grad-CAM on the last convolutional stage |
+| License | Code: portfolio/educational use. Dataset: CC BY 4.0 |
+
+### Custom CNN
+
+Four convolutional blocks (32 → 64 → 128 → 256 filters), each with two 3×3 convolutions, batch normalization, ReLU, and max pooling. Global average pooling, dropout 0.4, and a linear layer to 7 logits. Trained from scratch with AdamW, cosine learning-rate decay, label smoothing 0.1, class-weighted cross-entropy, and early stopping on validation macro-F1.
+
+### MobileNetV2
+
+torchvision MobileNetV2 with ImageNet `IMAGENET1K_V1` weights. The classifier is replaced with dropout 0.3 and a linear layer (1280 → 7). Training has two stages: the backbone is frozen while the head is trained, then the last three inverted-residual blocks are unfrozen with a lower backbone learning rate. Batch-norm statistics are frozen during fine-tuning. Checkpoint selection uses validation macro-F1.
+
+## Intended use
+
+**Intended:**
+
+- Educational and portfolio demonstration of an end-to-end waste classification system.
+- Household or facility triage assistance where a human confirms the final disposal decision.
+- Research scaffolding for waste-image classification, Grad-CAM explanation, and feedback collection.
+
+**Not intended:**
+
+- Automated sorting or safety-critical decisions without human review.
+- Regulatory compliance, municipal rule enforcement, or legal determinations about disposal.
+- Medical, hazardous-waste, or industrial-chemical handling decisions.
+- Identifying people, locations, or objects unrelated to waste classification.
+
+The recycling advice is general education. Bin colors, accepted materials, and collection rules vary by municipality and country; the application displays this disclaimer with every prediction.
+
+## Training data
+
+**RealWaste** (UCI ML Repository id 908):
+
+- 4,752 real photographs taken at the Whyte's Gully landfill, Wollongong, Australia
+- 524 × 524 JPG, nine source classes
+- License: CC BY 4.0
+- DOI: 10.24432/C5SS4G
+- Citation: Single, S., Iranmanesh, S., & Raad, R. (2023). *RealWaste: A Novel Real-Life Data Set for Landfill Waste Classification Using Deep Learning.* Information, 14(12), 633.
+
+Mapping to seven target classes:
+
+| Target | Sources | Count |
+|---|---|---:|
+| Plastic | Plastic | 921 |
+| Paper | Paper | 500 |
+| Cardboard | Cardboard | 461 |
+| Glass | Glass | 420 |
+| Metal | Metal | 790 |
+| Organic | Food Organics + Vegetation | 847 |
+| General | Miscellaneous Trash + Textile Trash | 813 |
+
+`Textile Trash → General` reflects the fact that textiles are rarely accepted in curbside recycling. This is a modeling judgment, not a property of the dataset.
+
+## Evaluation methodology
+
+- **Leakage-safe split:** SHA-256 exact-duplicate removal plus 64-bit dHash union-find grouping (Hamming distance ≤ 5); group-aware stratified 70/15/15 split with seed 42. Train 3,327 / validation 712 / test 713.
+- **Metrics:** accuracy, macro and weighted precision/recall/F1, per-class precision/recall/F1/support, confusion matrices, training/validation curves.
+- **Selection metric:** validation macro-F1, so minority classes count equally.
+- **Test discipline:** the held-out test split is evaluated once after model selection; it is not used for tuning.
+- **Reporting:** the smoke run uses a small subset and balanced test sample; the final run uses the full split.
+
+## Results
+
+### Final results: pending
+
+Final full-dataset training has **not** been run. The repository ships a **smoke checkpoint** for pipeline validation and demonstration. Its metrics are not model-quality claims.
+
+### Smoke run (pipeline validation only)
+
+Small stratified subset, 3 epochs, 420-image balanced test sample (60 per class):
+
+| Model | Accuracy | Macro F1 | Weighted F1 | CPU latency | Checkpoint |
+|---|---:|---:|---:|---:|---:|
+| Custom CNN | 0.488 | 0.457 | 0.457 | 29.4 ms | 4.5 MB |
+| MobileNetV2 | 0.700 | 0.695 | 0.695 | 23.8 ms | 8.7 MB |
+
+Per-class F1 for the smoke MobileNetV2: Plastic 0.593, Paper 0.646, Cardboard 0.756, Glass 0.698, Metal 0.674, Organic 0.875, General 0.620. These numbers will change substantially with full training.
+
+Final metrics are generated by `ml/scripts/evaluate.py --stage final` inside the Colab notebook and installed by `ml/scripts/install_artifacts.py`. The About page and API read the installed `metrics.json`; nothing is hand-entered.
+
+## Limitations
+
+- **Domain shift:** training images come from one Australian landfill facility. Household photography, different backgrounds, lighting, camera quality, and other regions may reduce accuracy.
+- **Coarse classes:** seven classes merge nine source classes; distinctions such as textile vs. general waste are lost.
+- **Single object assumption:** the model expects one dominant item. It does not detect, segment, or count multiple objects.
+- **Material ambiguity:** dirty or composite items (e.g., a greasy pizza box, a plastic-coated carton) may be inherently ambiguous even to humans.
+- **Confidence calibration:** softmax scores are not calibrated; low confidence is flagged below 0.60 but high confidence is not a guarantee.
+- **Guidance scope:** recycling guidance is not localized and may conflict with local rules.
+- **No feedback loop:** user feedback is stored unverified and does not retrain the model.
+- **Smoke checkpoint risk:** if the active checkpoint is `stage: smoke`, predictions and displayed metrics are demonstration-only. The UI banner and `/api/model-info` expose this.
+- **Explainability limits:** Grad-CAM highlights influential regions but is not a causal explanation and can be unstable across similar inputs.
+
+## Bias, fairness, and ethical considerations
+
+- The dataset reflects one facility's waste stream, camera setup, and labeling conventions. Performance may differ across countries, socioeconomic contexts, and packaging types.
+- Classes combine heterogeneous materials (e.g., Organic includes food and vegetation; General includes textiles and miscellaneous trash), which can hide per-material error patterns.
+- False “recyclable” predictions can contaminate recycling streams; false “general waste” predictions can send recyclable material to landfill. The UI therefore presents guidance as a recommendation and asks users to verify local rules.
+- Predictions and Grad-CAM images are stored with feedback. Operators deploying this beyond a demo should publish a retention policy and obtain consent where required.
+- There is no demographic data in the dataset, but photos may inadvertently capture people or locations; deployments should avoid retaining originals (the app already discards them).
+
+## Maintenance
+
+- Retraining requires re-running dataset preparation to preserve the leakage-safe split hash.
+- Installing new artifacts is gated by class-order, architecture, stage, and metrics validation.
+- Any change to class order, preprocessing, or architecture must be coordinated across `ml/classes.py`, `ml/transforms.py`, the frontend `CLASS_ORDER`, and the recycling guide.
+- Confidence calibration, out-of-distribution detection, and a verified feedback set are recommended before any production use.
+
+## Contact and attribution
+
+Dataset attribution is required under CC BY 4.0. Cite the RealWaste paper above and retain the DOI and license notice when redistributing models or derived data. Pretrained ImageNet weights are provided by torchvision under their respective licenses.

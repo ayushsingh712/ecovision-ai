@@ -1,0 +1,69 @@
+{
+  "arch": "mobilenet_v2",
+  "stage": "final",
+  "pretrained": true,
+  "stage_a_epochs": 4,
+  "stage_b_epochs": 12,
+  "unfreeze_blocks": 3,
+  "batch_size": 32,
+  "lr_head": 0.001,
+  "lr_backbone": 0.0001,
+  "weight_decay": 0.0001,
+  "dropout": 0.3,
+  "optimizer": "AdamW",
+  "scheduler": "CosineAnnealingLR -> ReduceLROnPlateau",
+  "label_smoothing": 0.1,
+  "class_weights": {
+    "Plastic": 0.7368770764119601,
+    "Paper": 1.3579591836734695,
+    "Cardboard": 1.4714727996461743,
+    "Glass": 1.6166180758017492,
+    "Metal": 0.8594678377680186,
+    "Organic": 0.8014936159961455,
+    "General": 0.8353000251067035
+  },
+  "seed": 42,
+  "device": "cpu",
+  "total_parameters": 2232839,
+  "trainable_parameters": 1215047,
+  "dataset": "RealWaste",
+  "torch_version": "2.15.0",
+  "samples": {
+    "train": {
+      "total": 3327,
+      "per_class": {
+        "Plastic": 645,
+        "Paper": 350,
+        "Cardboard": 323,
+        "Glass": 294,
+        "Metal": 553,
+        "Organic": 593,
+        "General": 569
+      }
+    },
+    "val": {
+      "total": 712,
+      "per_class": {
+        "Plastic": 138,
+        "Paper": 75,
+        "Cardboard": 69,
+        "Glass": 63,
+        "Metal": 118,
+        "Organic": 127,
+        "General": 122
+      }
+    },
+    "test": {
+      "total": 713,
+      "per_class": {
+        "Plastic": 138,
+        "Paper": 75,
+        "Cardboard": 69,
+        "Glass": 63,
+        "Metal": 119,
+        "Organic": 127,
+        "General": 122
+      }
+    }
+  }
+}
