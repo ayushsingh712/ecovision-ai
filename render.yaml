@@ -25,6 +25,24 @@ services:
         value: "true"
       - key: ECOVISION_HF_FILENAME
         value: mobilenet_v2_best.pt
+      # One CPU thread and one in-flight inference match the free plan's
+      # 0.1 CPU / 512 MB. Grad-CAM is generated on demand, not during /predict.
+      - key: ECOVISION_TORCH_THREADS
+        value: "1"
+      - key: ECOVISION_MAX_CONCURRENT_INFERENCE
+        value: "1"
+      - key: ECOVISION_INFERENCE_TIMEOUT_SECONDS
+        value: "20"
+      - key: ECOVISION_GRADCAM_ENABLED
+        value: "true"
+      - key: ECOVISION_GRADCAM_TIMEOUT_SECONDS
+        value: "30"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: MKL_NUM_THREADS
+        value: "1"
+      - key: OPENBLAS_NUM_THREADS
+        value: "1"
       # sync: false leaves the value out of git and prompts in the dashboard.
       - key: ECOVISION_HF_REPO
         sync: false

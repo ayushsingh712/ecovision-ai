@@ -41,12 +41,29 @@ def test_prediction_media_files_are_saved(client, sample_prediction):
     upload_dir = client.app.state.settings.upload_dir
     folder = upload_dir / sample_prediction["prediction_id"]
     assert (folder / "original.jpg").is_file()
-    assert (folder / "heatmap.png").is_file()
-    assert (folder / "overlay.png").is_file()
+    # Grad-CAM is generated on demand, so classification must not write it.
+    assert not (folder / "heatmap.png").exists()
+    assert not (folder / "overlay.png").exists()
 
     response = client.get(sample_prediction["gradcam"]["original_url"])
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("image/jpeg")
+
+    explanation = client.post(
+        f"/api/predictions/{sample_prediction['prediction_id']}/explanation"
+    )
+    assert explanation.status_code == 200, explanation.text
+    payload = explanation.json()
+    assert payload["status"] == "ready"
+    assert payload["gradcam"] == sample_prediction["gradcam"]
+
+    assert (folder / "heatmap.png").is_file()
+    assert (folder / "overlay.png").is_file()
+
+    for key in ("heatmap_url", "overlay_url"):
+        media = client.get(sample_prediction["gradcam"][key])
+        assert media.status_code == 200
+        assert media.headers["content-type"].startswith("image/png")
 
 
 def test_feedback_upserts_and_history_reflects_it(client, sample_prediction):

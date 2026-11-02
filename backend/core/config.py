@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     max_upload_mb: int = 8
     max_concurrent_inference: int = 2
     inference_timeout_seconds: float = 20.0
+    # 0 selects the machine's core count; 1 is fastest for single-image CPU
+    # inference and avoids oversubscription on fractional-CPU instances.
+    torch_threads: int = 1
+    # Grad-CAM runs on demand, outside the classification request.
+    gradcam_enabled: bool = True
+    gradcam_timeout_seconds: float = 30.0
     serve_frontend: bool = True
     frontend_dir: Path = Path("frontend")
     allowed_origins: str = "*"

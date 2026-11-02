@@ -104,9 +104,43 @@ Notes:
 
 - `top3` is sorted by confidence and always has up to three entries.
 - `low_confidence` is `true` when the top probability is below `0.60`.
-- The three media URLs are 512 × 512 JPEG/PNG served from the same origin.
-- No original upload is retained; only the normalized display image and Grad-CAM outputs are stored.
+- `/api/predict` performs one forward pass and returns as soon as classification, persistence, and the original thumbnail are complete. Grad-CAM is not generated during this request.
+- `original_url` is valid immediately. `heatmap_url` and `overlay_url` are populated by the explanation endpoint below; requesting them before generation returns `404`.
+- No original upload is retained; only the normalized 512 × 512 display image is stored, plus Grad-CAM outputs after an explanation succeeds.
 - Prediction is unavailable (`503`) if no checkpoint resolves at startup.
+
+---
+
+## POST /api/predictions/{prediction_id}/explanation
+
+Generates Grad-CAM outputs for an existing prediction on demand. The classification response has already been returned, so a slow or failed explanation never invalidates it.
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/predictions/9c1f4a7e2b8d4c6e9a0f3b5d7c1e2a4b/explanation
+```
+
+`200 OK` — `status` is `ready`, `disabled`, or `failed`.
+
+```json
+{
+  "prediction_id": "9c1f4a7e2b8d4c6e9a0f3b5d7c1e2a4b",
+  "status": "ready",
+  "gradcam": {
+    "original_url": "/media/9c1f4a7e2b8d4c6e9a0f3b5d7c1e2a4b/original.jpg",
+    "heatmap_url": "/media/9c1f4a7e2b8d4c6e9a0f3b5d7c1e2a4b/heatmap.png",
+    "overlay_url": "/media/9c1f4a7e2b8d4c6e9a0f3b5d7c1e2a4b/overlay.png"
+  },
+  "message": null
+}
+```
+
+| `status` | Meaning |
+|---|---|
+| `ready` | `heatmap.png` and `overlay.png` exist and are served from `/media/...`. Repeat calls reuse the files instead of regenerating them. |
+| `disabled` | `ECOVISION_GRADCAM_ENABLED=false`. `gradcam` is `null`. |
+| `failed` | Generation exceeded `ECOVISION_GRADCAM_TIMEOUT_SECONDS` or raised. `gradcam` is `null`; the prediction and its stored original remain valid. |
+
+The explanation uses the stored 512 × 512 image and the class that was originally predicted; it does not re-run classification. `404 PREDICTION_NOT_FOUND` is returned for an unknown id and `503 MODEL_UNAVAILABLE` when no checkpoint is loaded.
 
 ---
 
@@ -307,7 +341,7 @@ curl http://127.0.0.1:8000/api/model-info
 
 ## Static media
 
-`GET /media/<prediction-id>/<file>` serves `original.jpg`, `heatmap.png`, and `overlay.png` from the configured upload directory. These files are derived at prediction time and are not originals.
+`GET /media/<prediction-id>/<file>` serves `original.jpg` immediately after classification and `heatmap.png`/`overlay.png` after the explanation endpoint succeeds. These files are derived from the normalized display image, not the original upload.
 
 ## CORS
 

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -47,3 +49,10 @@ class PredictionResponse(BaseModel):
     model_version: str
     created_at: str
     low_confidence: bool
+
+
+class ExplanationResponse(BaseModel):
+    prediction_id: str
+    status: Literal["ready", "disabled", "failed"]
+    gradcam: GradCAMUrls | None = None
+    message: str | None = None

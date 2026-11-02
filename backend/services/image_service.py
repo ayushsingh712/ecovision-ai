@@ -18,6 +18,9 @@ ALLOWED_FORMATS = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp
 MIN_SIDE = 64
 MAX_PIXELS = 40_000_000
 DISPLAY_SIZE = 512
+ORIGINAL_FILE = "original.jpg"
+HEATMAP_FILE = "heatmap.png"
+OVERLAY_FILE = "overlay.png"
 CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]")
 
 
@@ -131,26 +134,36 @@ def validate_image_bytes(
     )
 
 
-def save_prediction_images(
-    upload_dir: Path, public_id: str, validated: ValidatedImage, gradcam
-) -> dict[str, str]:
+def save_original_image(
+    upload_dir: Path, public_id: str, validated: ValidatedImage
+) -> str:
+    """Store only the normalized display image on the classification path."""
     target = upload_dir / public_id
     target.mkdir(parents=True, exist_ok=True)
-    names = {
-        "original_file": "original.jpg",
-        "heatmap_file": "heatmap.png",
-        "overlay_file": "overlay.png",
-    }
     try:
         validated.display.save(
-            target / names["original_file"], format="JPEG", quality=88, optimize=True
+            target / ORIGINAL_FILE, format="JPEG", quality=88
         )
-        gradcam.heatmap.save(target / names["heatmap_file"], format="PNG", optimize=True)
-        gradcam.overlay.save(target / names["overlay_file"], format="PNG", optimize=True)
     except Exception:
         shutil.rmtree(target, ignore_errors=True)
         raise
-    return names
+    return ORIGINAL_FILE
+
+
+def save_explanation_images(
+    upload_dir: Path, public_id: str, gradcam
+) -> dict[str, str]:
+    """Store Grad-CAM outputs after classification has already been returned."""
+    target = upload_dir / public_id
+    target.mkdir(parents=True, exist_ok=True)
+    try:
+        gradcam.heatmap.save(target / HEATMAP_FILE, format="PNG")
+        gradcam.overlay.save(target / OVERLAY_FILE, format="PNG")
+    except Exception:
+        (target / HEATMAP_FILE).unlink(missing_ok=True)
+        (target / OVERLAY_FILE).unlink(missing_ok=True)
+        raise
+    return {"heatmap_file": HEATMAP_FILE, "overlay_file": OVERLAY_FILE}
 
 
 def delete_prediction_images(upload_dir: Path, public_id: str) -> None:

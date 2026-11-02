@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -59,7 +60,7 @@ class InferenceResult:
     predicted_class: str
     confidence: float
     top3: list[dict[str, Any]]
-    gradcam: GradCAMResult
+    gradcam: GradCAMResult | None
     stage: str
     version: str
     device: str
@@ -74,6 +75,7 @@ class ModelService:
         self._device = torch.device("cpu")
         self._load_error: str | None = None
         self._arch_catalog: list[dict[str, Any]] | None = None
+        self._model_lock = threading.Lock()
 
     @property
     def available(self) -> bool:
@@ -109,7 +111,14 @@ class ModelService:
             model.load_state_dict(payload["state_dict"])
             device = resolve_device(self.settings.device)
             if device.type == "cpu":
-                torch.set_num_threads(min(4, os.cpu_count() or 1))
+                threads = self._resolve_threads()
+                torch.set_num_threads(threads)
+                logger.info(
+                    "PyTorch CPU threads set to %d (configured=%d, cores=%d)",
+                    threads,
+                    self.settings.torch_threads,
+                    os.cpu_count() or 1,
+                )
             model.to(device)
             model.eval()
 
@@ -158,14 +167,30 @@ class ModelService:
             logger.exception("Failed to read metrics file %s", candidate)
             return None
 
-    def predict(self, image: Image.Image, display: Image.Image) -> InferenceResult:
+    def _resolve_threads(self) -> int:
+        cores = os.cpu_count() or 1
+        configured = self.settings.torch_threads
+        threads = cores if configured <= 0 else configured
+        return max(1, min(threads, cores))
+
+    def _prepare(self, image: Image.Image) -> torch.Tensor:
         if self.loaded is None:
             raise RuntimeError("Model is not loaded.")
-        tensor = self._transform(image).unsqueeze(0).to(self._device)
-        with torch.inference_mode():
-            logits = self.loaded.model(tensor)
-            probabilities = torch.softmax(logits, dim=1)[0].detach().cpu()
+        return self._transform(image).unsqueeze(0).to(self._device)
 
+    def _forward(self, tensor: torch.Tensor) -> torch.Tensor:
+        if self.loaded is None:
+            raise RuntimeError("Model is not loaded.")
+        # Grad-CAM adds a forward hook to the shared target layer, so model
+        # execution is serialized across classification and explanations.
+        with self._model_lock:
+            with torch.inference_mode():
+                return self.loaded.model(tensor)
+
+    def _build_result(self, logits: torch.Tensor) -> InferenceResult:
+        if self.loaded is None:
+            raise RuntimeError("Model is not loaded.")
+        probabilities = torch.softmax(logits, dim=1)[0].detach().cpu()
         top = torch.topk(probabilities, k=min(3, len(self.loaded.class_names)))
         top3 = [
             {
@@ -177,21 +202,46 @@ class ModelService:
         predicted_index = int(top.indices[0])
         predicted_class = self.loaded.class_names[predicted_index]
         confidence = float(top.values[0])
-
-        assert self.loaded.gradcam is not None
-        gradcam = self.loaded.gradcam.generate(
-            tensor, class_index=predicted_index, original=display
-        )
         return InferenceResult(
             predicted_index=predicted_index,
             predicted_class=predicted_class,
             confidence=round(confidence, 6),
             top3=top3,
-            gradcam=gradcam,
+            gradcam=None,
             stage=self.loaded.stage,
             version=self.loaded.version,
             device=str(self._device),
         )
+
+    def classify(self, image: Image.Image) -> InferenceResult:
+        """Classification only; safe to return before any explanation work."""
+        return self._build_result(self._forward(self._prepare(image)))
+
+    def explain(
+        self, image: Image.Image, class_index: int
+    ) -> GradCAMResult:
+        """Generate Grad-CAM for an already-classified image."""
+        if self.loaded is None:
+            raise RuntimeError("Model is not loaded.")
+        if self.loaded.gradcam is None:
+            raise RuntimeError("Grad-CAM is not available for this model.")
+        tensor = self._prepare(image)
+        with self._model_lock:
+            return self.loaded.gradcam.generate(
+                tensor, class_index=class_index, original=image
+            )
+
+    def predict(self, image: Image.Image, display: Image.Image) -> InferenceResult:
+        """Convenience call for scripts: classification plus Grad-CAM."""
+        tensor = self._prepare(image)
+        result = self._build_result(self._forward(tensor))
+        if self.loaded is None or self.loaded.gradcam is None:
+            raise RuntimeError("Grad-CAM is not available for this model.")
+        with self._model_lock:
+            result.gradcam = self.loaded.gradcam.generate(
+                tensor, class_index=result.predicted_index, original=display
+            )
+        return result
 
     def _architecture_catalog(self) -> list[dict[str, Any]]:
         if self._arch_catalog is None:

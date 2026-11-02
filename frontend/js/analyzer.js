@@ -19,7 +19,11 @@ const state = {
   submitting: false,
   feedbackSent: false,
   activeView: "original",
+  explanation: "idle",
 };
+
+let explanationPromise = null;
+let explanationFor = null;
 
 const els = {
   dropzone: qs("#dropzone"),
@@ -160,6 +164,11 @@ async function acceptFile(file) {
 
 function clearSelection() {
   state.file = null;
+  state.result = null;
+  state.explanation = "idle";
+  explanationPromise = null;
+  explanationFor = null;
+  setExplanationButtons(true);
   if (state.previewUrl) URL.revokeObjectURL(state.previewUrl);
   state.previewUrl = null;
   els.previewImg.removeAttribute("src");
@@ -250,8 +259,67 @@ function renderAdvice(advice) {
   els.adviceDisclaimer.textContent = advice.disclaimer || "";
 }
 
-function setGradcamView(view) {
+function setExplanationButtons(enabled) {
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    if (button.dataset.view !== "original") {
+      button.disabled = !enabled;
+    }
+  });
+}
+
+async function ensureExplanation() {
+  const result = state.result;
+  if (!result) return false;
+  if (state.explanation === "ready") return true;
+  if (state.explanation === "unavailable") return false;
+  if (explanationPromise && explanationFor === result) {
+    return explanationPromise;
+  }
+
+  explanationFor = result;
+  state.explanation = "pending";
+  setExplanationButtons(false);
+  els.gradcamCaption.textContent = "Generating Grad-CAM explanation…";
+
+  explanationPromise = (async () => {
+    try {
+      const info = await api.explain(result.prediction_id);
+      if (state.result !== result) return false;
+      if (info.status === "ready") {
+        state.explanation = "ready";
+        setExplanationButtons(true);
+        return true;
+      }
+      state.explanation = "unavailable";
+      setExplanationButtons(false);
+      els.gradcamCaption.textContent = info.status === "disabled"
+        ? "Grad-CAM explanations are disabled on this deployment."
+        : (info.message || "The explanation could not be generated. The classification result is still valid.");
+      return false;
+    } catch {
+      if (state.result === result) {
+        state.explanation = "unavailable";
+        setExplanationButtons(false);
+        els.gradcamCaption.textContent = "The explanation could not be generated. The classification result is still valid.";
+      }
+      return false;
+    } finally {
+      if (explanationFor === result) {
+        explanationPromise = null;
+        explanationFor = null;
+      }
+    }
+  })();
+
+  return explanationPromise;
+}
+
+async function setGradcamView(view) {
   if (!state.result) return;
+  if (view !== "original") {
+    const ready = await ensureExplanation();
+    if (!ready || !state.result) return;
+  }
   state.activeView = view;
   const urls = {
     original: state.result.gradcam.original_url,
@@ -291,6 +359,11 @@ function renderResult(data) {
   show(els.loading, false);
   show(els.content, true);
   setResultError("");
+
+  state.explanation = "idle";
+  explanationPromise = null;
+  explanationFor = null;
+  setExplanationButtons(true);
 
   const isFinal = data.model_stage === "final";
   els.resultStage.textContent = isFinal ? "Final model" : "Development checkpoint";
@@ -418,6 +491,7 @@ function bindEvents() {
 }
 
 els.gradcamImg.addEventListener("error", () => {
+  if (state.explanation === "pending") return;
   els.gradcamCaption.textContent = "The explanation image could not be loaded.";
 });
 

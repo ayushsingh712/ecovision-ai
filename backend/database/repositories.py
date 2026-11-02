@@ -52,6 +52,23 @@ def get_prediction_by_public_id(
         ).fetchone()
 
 
+def update_prediction_explanation(
+    db: Database,
+    public_id: str,
+    heatmap_file: str,
+    overlay_file: str,
+) -> None:
+    with db.connection() as connection:
+        connection.execute(
+            """
+            UPDATE predictions
+            SET heatmap_file = ?, overlay_file = ?
+            WHERE public_id = ?
+            """,
+            (heatmap_file, overlay_file, public_id),
+        )
+
+
 def upsert_feedback(
     db: Database,
     prediction_id: int,

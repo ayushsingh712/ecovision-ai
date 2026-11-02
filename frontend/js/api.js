@@ -65,6 +65,12 @@ export const api = {
     form.append("image", file, file.name || "waste-image.jpg");
     return request("/predict", { method: "POST", body: form, timeout: 45000 });
   },
+  explain(predictionId) {
+    return request(`/predictions/${predictionId}/explanation`, {
+      method: "POST",
+      timeout: 45000,
+    });
+  },
   feedback(payload) {
     return request("/feedback", {
       method: "POST",

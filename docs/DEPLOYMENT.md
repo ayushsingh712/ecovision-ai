@@ -126,8 +126,9 @@ The frontend is static HTML/CSS/JS; it can be served from S3/CloudFront, Netlify
 - **Model artifacts:** never bake weights into git or the image. Set `ECOVISION_HF_REPO` to a Hugging Face model repository and the app downloads the checkpoint, optional manifest, and optional metrics at startup. `ECOVISION_MODEL_PATH` overrides the download when you mount a checkpoint directly. If the download fails, the app starts degraded rather than fabricating predictions.
 - **Disk:** attach a persistent volume and point `ECOVISION_DATA_DIR` at it. Without a disk, SQLite history and uploads are lost on redeploy or restart.
 - **Health check:** `/api/health`.
-- **Memory:** CPU inference with MobileNetV2 typically needs roughly 400–800 MB resident; allow 1 GB where possible.
+- **Memory:** CPU inference with MobileNetV2 typically needs roughly 400–800 MB resident; allow 1 GB where possible. Render's free plan provides 512 MB, so keep concurrency at `1` and leave Grad-CAM lazy (the default) to avoid holding two forward passes and a backward pass in memory at once.
 - **Render:** [`render.yaml`](../render.yaml) defines a free Docker web service. The free filesystem is ephemeral, so model artifacts are re-downloaded on each boot and runtime data resets.
+- **CPU tuning:** `ECOVISION_TORCH_THREADS=1` is the default and is fastest for single-image inference on fractional-CPU instances. Also set `OMP_NUM_THREADS=1`, `MKL_NUM_THREADS=1`, and `OPENBLAS_NUM_THREADS=1` so BLAS does not spawn extra threads; `render.yaml` already does this.
 - **Environment:**
 
   ```text
@@ -142,6 +143,11 @@ The frontend is static HTML/CSS/JS; it can be served from S3/CloudFront, Netlify
   ECOVISION_SERVE_FRONTEND=true
   ECOVISION_ALLOWED_ORIGINS=https://app.example.com
   ECOVISION_LOG_LEVEL=INFO
+  ECOVISION_INFERENCE_TIMEOUT_SECONDS=20
+  ECOVISION_TORCH_THREADS=1
+  ECOVISION_MAX_CONCURRENT_INFERENCE=1
+  ECOVISION_GRADCAM_ENABLED=true
+  ECOVISION_GRADCAM_TIMEOUT_SECONDS=30
   ```
 
 Fly.io needs a volume mount at `/data`; Railway uses a volume with the same variables. Consult each provider's current volume syntax, since mount paths differ.
@@ -151,7 +157,7 @@ Fly.io needs a volume mount at `/data`; Railway uses a volume with the same vari
 | Path | Contents | Backup? |
 |---|---|---|
 | `data/ecovision.db` | Predictions, feedback, metadata | Yes |
-| `data/uploads/<id>/` | 512 px original, heatmap, overlay | Optional (derived) |
+| `data/uploads/<id>/` | 512 px original; heatmap/overlay after an explanation succeeds | Optional (derived) |
 | `ml/models/` | Checkpoints + manifest | Yes |
 | `ml/evaluation/` | Metrics and plots | Yes (can regenerate) |
 
@@ -189,9 +195,12 @@ SQLite and local media are deliberate choices for a demo/single-instance deploym
 | Symptom | Cause | Fix |
 |---|---|---|
 | `/api/predict` returns `503 MODEL_UNAVAILABLE` | No checkpoint resolved | Install artifacts, check `ECOVISION_MODEL_DIR`, restart |
+| `/api/predict` returns `504 INFERENCE_TIMEOUT` after ~20 s | The classification request used its full budget on a slow host | Check `/api/health` after the cold start, set `ECOVISION_TORCH_THREADS=1`, and confirm `ECOVISION_MAX_CONCURRENT_INFERENCE=1`. Grad-CAM no longer runs on this path; a repeat `504` means the host itself is too slow, not the explanation |
+| Heatmap/overlay tabs stay disabled | Explanation returned `disabled` or `failed` | Enable `ECOVISION_GRADCAM_ENABLED`; read the explanation response message and the `ecovision.explanation` log line. The classification result remains valid |
+| Heatmap/overlay request exceeds its budget | Grad-CAM on a very slow CPU | Raise `ECOVISION_GRADCAM_TIMEOUT_SECONDS` or set `ECOVISION_GRADCAM_ENABLED=false`; classification is unaffected either way |
 | `/api/health` says `"database": "error"` | Unwritable DB path | Ensure the volume exists and is writable by the runtime user |
 | Predictions are slow on first request | CPU thread warm-up / model load | Send a warm-up request after deploy; raise `ECOVISION_MAX_CONCURRENT_INFERENCE` only if CPU allows |
-| Grad-CAM images 404 | `data/uploads` not persisted or wrong `ECOVISION_UPLOAD_DIR` | Persist `data/`, check mount permissions |
+| Grad-CAM images 404 | `data/uploads` not persisted, explanation not requested yet, or wrong `ECOVISION_UPLOAD_DIR` | Persist `data/`, call the explanation endpoint first, check mount permissions |
 | CORS errors in the browser | Frontend origin not allowed | Set `ECOVISION_ALLOWED_ORIGINS` and restart |
 | Frontend loads from cache after an update | Browser caching static assets | The app sends `Cache-Control: no-cache` for HTML/JS/CSS; hard-refresh once or version assets at the CDN |
 | Container health check fails during startup | Model load slower than `start-period` | Increase `HEALTHCHECK --start-period` or reduce model size |

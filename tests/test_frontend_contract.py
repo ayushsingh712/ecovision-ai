@@ -19,6 +19,7 @@ SUPPORTED_PATHS = {
     "/statistics",
     "/history",
     "/predict",
+    "/predictions/${predictionId}/explanation",
     "/feedback",
 }
 
